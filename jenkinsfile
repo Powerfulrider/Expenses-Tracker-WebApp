@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Powerfulrider/FullStack-Blogging-App.git'
+            }
+        }
+        
+        stage('Deploy the application') {
+            steps {
+                dir('Expenses-Tracker-WebApp') {
+                sh 'docker-compose up --build'
+                }
+            }
+        }   
+    }
+}
