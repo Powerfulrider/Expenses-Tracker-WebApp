@@ -4,16 +4,27 @@ pipeline {
     stages {
         stage('git clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/Powerfulrider/FullStack-Blogging-App.git'
+                git branch: 'main', url: 'https://github.com/Powerfulrider/Expenses-Tracker-WebApp.git'
             }
         }
         
-        stage('Deploy the application') {
+        stage('Clean Previous Deployment') {
             steps {
-                dir('Expenses-Tracker-WebApp') {
-                sh 'docker-compose up --build'
+                dir('FullStack-Blogging-App') { // Ensure commands run in the cloned repository's directory
+                    sh 'docker-compose down --remove-orphans'
+                    // Force remove containers in case of leftover containers
+                    sh 'docker ps -a -q --filter "name=mysql" | xargs -r docker rm -f'
                 }
             }
-        }   
+        }
+        
+        stage('Deploy the Application') {
+            steps {
+                dir('FullStack-Blogging-App') { // Ensure commands run in the cloned repository's directory
+                    sh 'docker-compose up --build -d'
+                }
+            }
+        }  
     }
 }
+
